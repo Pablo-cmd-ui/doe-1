@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro</h1>
+        <form id="formCadastro">
+            <div class="input-box">
+                <input type="text" name="nome" placeholder="Nome" required>
+            </div>
+            <div class="input-box">
+                <input type="number" name="idade" placeholder="Idade" required>
+            </div>
+            <div class="input-box">
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-box">
+                <input type="password" name="senha" placeholder="Senha" required>
+            </div>
+            <div class="input-box">
+                <input type="text" name="endereco" placeholder="Endereco" required>
+            </div>
+            <button class="login" type="submit">Cadastrar</button>
+        </form><br>
+
+        <button class="login" onclick="window.location.href='login.html'">Avançar para Login</button>
+    </div>
+
+  <script>
+    const form = document.getElementById("formCadastro");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Captura os dados do form corretamente
+      const dados = {
+        nome: form.nome.value.trim(),
+        idade: parseInt(form.idade.value),
+        email: form.email.value.trim(),
+        senha: form.senha.value,
+        endereco: form.endereco.value.trim()
+      };
+
+      if (!dados.nome || isNaN(dados.idade)) {
+        alert("Preencha nome e idade corretamente.");
+        return;
+      }
+
+      try {
+        const resposta = await fetch("http://localhost:3000/usuarios", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dados)
+        });
+
+        if (resposta.ok) {
+          const json = await resposta.json();
+          alert("Usuário criado com sucesso! " );
+          form.reset();
+        } else {
+          const erro = await resposta.json();
+          alert("Erro: " + erro.error);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar ao servidor.");
+      }
+    });
+  </script>
+</body>
+</html>
